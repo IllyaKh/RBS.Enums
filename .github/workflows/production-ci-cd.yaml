@@ -7,7 +7,7 @@
 
   env:
     PROJECT_NAME: 'RBS.Enums'
-    PROJECT_PATH: 'RBS.Enums/RBS.Enums/RBS.Enums.csproj'
+    PROJECT_PATH: 'RBS.Enums/RBS.Enums/RBS_Enums.csproj'
     PACKAGE_OUTPUT_DIR: ${{ github.workspace }}/output
     NUGET_SOURCE_URL: 'https://api.nuget.org/v3/index.json'
 
