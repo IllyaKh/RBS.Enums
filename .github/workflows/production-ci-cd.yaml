@@ -8,7 +8,7 @@
   env:
     PROJECT_NAME: 'RBS.Enums'
     PROJECT_PATH: 'RBS.Enums/RBS.Enums/RBS.Enums.csproj'
-    PACKAGE_OUTPUT_DIR: ${{ github.workspace }}\output
+    PACKAGE_OUTPUT_DIR: ${{ github.workspace }}/output
     NUGET_SOURCE_URL: 'https://api.nuget.org/v3/index.json'
 
   jobs:
@@ -40,7 +40,7 @@
           run: dotnet pack ${{ env.PROJECT_PATH }} -c Release --no-restore --no-build --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIR }}
 
         - name: Push package to NuGet 📫
-          run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIR }}\*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ env.NUGET_SOURCE_URL }}
+          run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIR }}/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s ${{ env.NUGET_SOURCE_URL }}
 
       
     notifyTelegram:
