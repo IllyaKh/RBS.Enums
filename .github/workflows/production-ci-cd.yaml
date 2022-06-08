@@ -1,0 +1,65 @@
+name: CI/CD RBS.Enums package to production
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_NAME: 'RBS.Enums'
+  PACKAGE_OUTPUT_DIR: ${{ github.workspace }}
+  NUGET_SOURCE_URL: 'https://api.nuget.org/v3/index.json'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      build_result: ${{ steps.dotnet_build_app.RESULT_BUILD }}
+    steps:
+      - name: Checkout code 💩
+        uses: actions/checkout@v2
+        
+      - name: Setup .NET 6 🔑
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Restore dependencies ⛓️
+        run: dotnet restore ${{ env.PROJECT_NAME }}
+      
+      - name: Build an application 🚀
+        id: dotnet_build_app
+        run: dotnet build ${{ env.PROJECT_NAME }} -c Release --no-restore
+
+      - name: Get version of application 🦠
+        id: version
+        uses: batilla7/get-version-action@v2
+
+      - name: Pack an application 🧳
+        id: dotnet_build_app
+        run: dotnet pack ${{ env.PROJECT_NAME }} -c Release --no-restore --no-build --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output $ {{ env.PACKAGE_OUTPUT_DIR }}
+
+      - name: Push package to NuGet 📫
+        id: dotnet_build_app
+        run: dotnet nuget push ${{ env.PROJECT_NAME }}\*.nupkg -k {{ secrets.NUGET_API_KEY }} -s ${{ env.NUGET_SOURCE_URL }}
+
+    
+  notifyTelegram:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send build result of CI/CD process to Telegram 📫
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.actor }} pushed new version of ${{ PROJECT_NAME }} to NuGet:
+            
+            Repository: ${{ github.repository }}
+            
+            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+            
+
+
+      
