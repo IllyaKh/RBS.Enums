@@ -54,7 +54,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            ${{ github.actor }} pushed new version of ${{ PROJECT_NAME }} to NuGet:
+            ${{ github.actor }} pushed new version of ${{ env.PROJECT_NAME }} to NuGet:
             
             Repository: ${{ github.repository }}
             
